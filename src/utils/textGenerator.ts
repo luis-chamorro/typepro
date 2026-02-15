@@ -1,5 +1,8 @@
-import { sentence, paragraph } from '@ndaidong/txtgen';
+import { sentence, paragraph, addTemplates, setTemplates } from '@ndaidong/txtgen';
 import { TestConfig } from '../types';
+import { moreSentenceTemplates } from './templates';
+
+addTemplates(moreSentenceTemplates);
 
 /**
  * Generate text based on test configuration
