@@ -1,46 +1,74 @@
-# Getting Started with Create React App
+# TypePro - Retro Typing Speed Test
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A pixel art typing speed test application with a retro green terminal aesthetic.
 
-## Available Scripts
+![Status](https://img.shields.io/badge/status-90%25%20complete-brightgreen)
+![React](https://img.shields.io/badge/react-18.x-blue)
+![TypeScript](https://img.shields.io/badge/typescript-4.x-blue)
 
-In the project directory, you can run:
+## Quick Start
 
-### `npm start`
+```bash
+npm install
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Visit **http://localhost:3000**
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Features
 
-### `npm test`
+✅ **Two test modes**: Timed (30s/60s/120s) or Word-based (25/50/100 words)
+✅ **Character-by-character tracking** with live feedback
+✅ **Visual keyboard** with key press animations
+✅ **Real-time WPM calculation** with strike penalties
+✅ **Backspace correction** support
+✅ **Retro green terminal aesthetic** (Press Start 2P font)
+✅ **Performance badges** and detailed results
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Project Status
 
-### `npm run build`
+**Phase 8/10 Complete** - Core functionality done, ready for polish and responsive design.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+See **[CLAUDE.md](./CLAUDE.md)** for comprehensive documentation and continuation guide.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Tech Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- React 18 + TypeScript
+- CSS Modules
+- @ndaidong/txtgen (text generation)
+- Press Start 2P font (pixel art)
+- Create React App
 
-### `npm run eject`
+## Development
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+npm start      # Dev server (localhost:3000)
+npm run build  # Production build
+npm test       # Run tests
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Project Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+src/
+├── components/     # React components (WelcomeScreen, TypingChallenge, etc.)
+├── hooks/          # Custom hooks (useTypingTest, useTimer)
+├── types/          # TypeScript type definitions
+├── utils/          # Utility functions (calculations, text generation)
+└── styles/         # Global styles and CSS variables
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Next Steps
 
-## Learn More
+- [ ] Phase 9: Polish & Visual Effects
+- [ ] Phase 10: Responsive Design & Testing
+- [ ] Deploy to production
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Documentation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **[CLAUDE.md](./CLAUDE.md)** - Complete project documentation for AI continuation
+- **[outline.txt](./outline.txt)** - Original project requirements
+
+---
+
+Built with Create React App + TypeScript

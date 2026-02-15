@@ -1,0 +1,174 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  position: relative;
+  cursor: text;
+}
+
+/* Hidden Input Field */
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Timer Display - Top Left */
+.timerDisplay {
+  position: absolute;
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--green-primary);
+  background-color: var(--bg-darker);
+  z-index: 10;
+  text-align: center;
+}
+
+.timerLabel {
+  font-size: var(--font-xs);
+  color: var(--green-secondary);
+  margin-bottom: 4px;
+}
+
+.timerValue {
+  font-size: var(--font-lg);
+  color: var(--green-primary);
+  text-shadow: 0 0 10px var(--green-neon);
+}
+
+/* WPM Display - Top Center */
+.wpmDisplay {
+  position: absolute;
+  top: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--green-primary);
+  background-color: var(--bg-darker);
+  z-index: 10;
+  text-align: center;
+}
+
+.wpmLabel {
+  font-size: var(--font-xs);
+  color: var(--green-secondary);
+  margin-bottom: 4px;
+}
+
+.wpmValue {
+  font-size: var(--font-lg);
+  color: var(--green-primary);
+  text-shadow: 0 0 10px var(--green-neon);
+}
+
+/* Strike Counter - Top Right */
+.strikeCounter {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  font-size: var(--font-md);
+  color: var(--error);
+  text-shadow: 0 0 10px var(--error);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--error);
+  background-color: var(--bg-darker);
+  z-index: 10;
+  transition: all 0.1s ease;
+}
+
+/* Shake animation for strikes */
+.shake {
+  animation: shake 0.3s ease-in-out;
+  background-color: var(--error) !important;
+  color: var(--bg-dark) !important;
+  transform: scale(1.1);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) scale(1.1); }
+  25% { transform: translateX(-10px) scale(1.1); }
+  75% { transform: translateX(10px) scale(1.1); }
+}
+
+/* Text preview section at top */
+.textSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
+.textPreview {
+  max-width: 900px;
+  font-size: var(--font-md);
+  line-height: 2;
+  color: var(--green-secondary);
+  text-align: left;
+  padding: var(--spacing-lg);
+  border: 3px solid var(--green-primary);
+  background-color: var(--bg-darker);
+  box-shadow: 0 0 10px var(--green-primary);
+
+  /* Limit to 3 lines */
+  max-height: calc(var(--font-md) * 2 * 3); /* font-size * line-height * 3 lines */
+  overflow: hidden;
+  position: relative;
+
+  /* Ensure proper text flow */
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Character styles */
+.char {
+  color: var(--text-dim);
+  transition: all 0.1s ease;
+  white-space: pre-wrap;
+}
+
+/* Correctly typed character */
+.correctChar {
+  color: var(--correct);
+  white-space: pre-wrap;
+  transition: all 0.1s ease;
+}
+
+/* Incorrectly typed character (temporarily shown during error) */
+.incorrectChar {
+  color: var(--error);
+  text-shadow: 0 0 5px var(--error);
+  white-space: pre-wrap;
+  transition: all 0.1s ease;
+}
+
+/* Current character position - light green transparent block */
+.currentChar {
+  background-color: rgba(0, 255, 65, 0.4);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.4);
+}
+
+/* Typewriter section at bottom */
+.typewriterSection {
+  display: flex;
+  justify-content: center;
+  padding-bottom: var(--spacing-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+
+  .textPreview {
+    font-size: var(--font-sm);
+    line-height: 1.8;
+    padding: var(--spacing-md);
+  }
+}

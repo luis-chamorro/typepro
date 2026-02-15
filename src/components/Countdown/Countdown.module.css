@@ -1,0 +1,95 @@
+.container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.countdownBox {
+  text-align: center;
+  padding: var(--spacing-xl);
+  background-color: rgba(13, 17, 23, 0.9);
+  border: 3px solid var(--green-primary);
+  box-shadow: 0 0 20px var(--green-neon);
+}
+
+/* Number Styles */
+.number {
+  font-size: 5rem;
+  color: var(--green-primary);
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 0 10px var(--green-neon);
+
+  /* Scale-in animation */
+  animation: scaleIn 0.8s ease-out;
+}
+
+/* GO! Styles */
+.go {
+  font-size: 4rem;
+  color: var(--green-primary);
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 0 15px var(--green-neon);
+
+  /* Explosive animation for GO */
+  animation: explode 0.5s ease-out;
+}
+
+/* Scale-in Animation */
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Explode Animation for GO */
+@keyframes explode {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .number {
+    font-size: 4rem;
+  }
+
+  .go {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .number {
+    font-size: 3rem;
+  }
+
+  .go {
+    font-size: 2.5rem;
+  }
+}

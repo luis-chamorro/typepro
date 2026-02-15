@@ -1,0 +1,4 @@
+I want to create a react web application that tests typing speed.
+The app should have a pixel art style.
+When you open the app, you are greeted by a welcome message with an option to measure your typing speed in either a fixed amount of time or with a fixed amount of words. 
+When you select one of the options, you are directed to a typing speed challenge. There is a countdown that starts at 5 and goes all the way to 1. On the bottom of the screen is a pixel art typewriter that follows your every move. On the top of the screen is a preview of the text that you will type. As you type the cursor moves to reflect the text that you've typed. After you finish typing, you are given a score showing the amount of wpm that you've achieved. Then you are shown a "Go back" button. When you click that, you are redirected to the welcome screen.

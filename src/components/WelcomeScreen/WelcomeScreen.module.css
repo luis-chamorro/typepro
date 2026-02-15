@@ -1,0 +1,134 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.content {
+  max-width: 1000px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Title Styles */
+.title {
+  font-size: var(--font-xxl);
+  color: var(--green-primary);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 4px;
+}
+
+.titleGlow {
+  text-shadow:
+    0 0 10px var(--green-neon),
+    0 0 20px var(--green-neon),
+    0 0 30px var(--green-neon);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 10px var(--green-neon),
+      0 0 20px var(--green-neon),
+      0 0 30px var(--green-neon);
+  }
+  50% {
+    text-shadow:
+      0 0 5px var(--green-neon),
+      0 0 10px var(--green-neon),
+      0 0 15px var(--green-neon);
+  }
+}
+
+.subtitle {
+  font-size: var(--font-md);
+  color: var(--green-secondary);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Mode Cards Container */
+.modesContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+}
+
+/* Mode Card */
+.modeCard {
+  background-color: var(--bg-darker);
+  border: var(--border-width) solid var(--green-primary);
+  padding: var(--spacing-lg);
+  box-shadow: 0 0 10px var(--green-neon);
+  transition: all 0.3s ease;
+}
+
+.modeCard:hover {
+  box-shadow: 0 0 20px var(--green-neon);
+  transform: translateY(-4px);
+}
+
+.modeTitle {
+  font-size: var(--font-lg);
+  color: var(--green-primary);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 2px;
+}
+
+.modeDescription {
+  font-size: var(--font-sm);
+  color: var(--green-secondary);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+
+/* Options Container */
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Option Buttons */
+.optionButton {
+  font-family: 'Press Start 2P', monospace;
+  font-size: var(--font-sm);
+  color: var(--green-primary);
+  background-color: var(--bg-dark);
+  border: 2px solid var(--green-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.optionButton:hover {
+  background-color: var(--green-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px var(--green-neon);
+  transform: scale(1.05);
+}
+
+.optionButton:active {
+  transform: scale(0.98);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title {
+    font-size: var(--font-xl);
+  }
+
+  .modesContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .optionButton {
+    font-size: var(--font-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
