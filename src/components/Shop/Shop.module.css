@@ -1,0 +1,251 @@
+/* Overlay - dark background covering full screen */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal dialog - 60% of screen */
+.modal {
+  width: 60%;
+  max-width: 800px;
+  max-height: 80vh;
+  background-color: var(--bg-darker);
+  border: 4px solid var(--green-primary);
+  box-shadow: 0 0 30px var(--green-neon);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header with title and close button */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--green-primary);
+}
+
+.title {
+  font-size: var(--font-xl);
+  color: var(--green-primary);
+  text-shadow: 0 0 15px var(--green-neon);
+  letter-spacing: 4px;
+  margin: 0;
+}
+
+.closeButton {
+  font-family: 'Press Start 2P', monospace;
+  font-size: var(--font-lg);
+  color: var(--green-primary);
+  background-color: transparent;
+  border: 2px solid var(--green-primary);
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background-color: var(--green-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px var(--green-neon);
+  transform: scale(1.1);
+}
+
+.closeButton:active {
+  transform: scale(1.05);
+}
+
+/* Score info */
+.scoreInfo {
+  font-size: var(--font-md);
+  color: var(--green-secondary);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  padding: var(--spacing-sm);
+  border: 2px solid var(--green-dim);
+  background-color: var(--bg-dark);
+}
+
+/* Upgrades list */
+.upgradeList {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding-right: var(--spacing-sm);
+}
+
+/* Custom scrollbar */
+.upgradeList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.upgradeList::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+  border: 1px solid var(--green-dim);
+}
+
+.upgradeList::-webkit-scrollbar-thumb {
+  background: var(--green-primary);
+  box-shadow: 0 0 5px var(--green-neon);
+}
+
+/* Upgrade card */
+.upgradeCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  border: 3px solid var(--green-primary);
+  background-color: var(--bg-dark);
+  gap: var(--spacing-md);
+  transition: all 0.2s ease;
+}
+
+.upgradeCard:not(.purchased):hover {
+  box-shadow: 0 0 15px var(--green-primary);
+  transform: translateX(5px);
+}
+
+/* Purchased upgrade styling */
+.upgradeCard.purchased {
+  border-color: var(--green-dim);
+  opacity: 0.6;
+}
+
+.upgradeContent {
+  flex: 1;
+}
+
+.upgradeName {
+  font-size: var(--font-md);
+  color: var(--green-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+  letter-spacing: 2px;
+}
+
+.upgradeDescription {
+  font-size: var(--font-sm);
+  color: var(--green-secondary);
+  margin: 0 0 var(--spacing-sm) 0;
+  line-height: 1.6;
+}
+
+.upgradeCost {
+  font-size: var(--font-sm);
+  color: var(--green-neon);
+  font-weight: bold;
+}
+
+/* Buy button */
+.buyButton {
+  font-family: 'Press Start 2P', monospace;
+  font-size: var(--font-sm);
+  color: var(--green-primary);
+  background-color: var(--bg-dark);
+  border: 3px solid var(--green-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  min-width: 100px;
+}
+
+.buyButton:hover:not(.disabled) {
+  background-color: var(--green-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 15px var(--green-neon);
+  transform: scale(1.05);
+}
+
+.buyButton:active:not(.disabled) {
+  transform: scale(1.0);
+}
+
+.buyButton.disabled {
+  border-color: var(--green-dim);
+  color: var(--green-dim);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Checkmark for purchased items */
+.checkmark {
+  font-size: 48px;
+  color: var(--green-primary);
+  text-shadow: 0 0 20px var(--green-neon);
+  animation: checkmarkPop 0.3s ease-out;
+  min-width: 100px;
+  text-align: center;
+}
+
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .modal {
+    width: 90%;
+    padding: var(--spacing-md);
+  }
+
+  .title {
+    font-size: var(--font-lg);
+  }
+
+  .upgradeCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buyButton,
+  .checkmark {
+    width: 100%;
+  }
+}

@@ -1,88 +1,64 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PixelTypewriter from '../PixelTypewriter/PixelTypewriter';
-import { TestConfig, TestResult } from '../../types';
+import Shop, { Upgrade } from '../Shop/Shop';
 import { useTypingTest } from '../../hooks/useTypingTest';
-import { useTimer } from '../../hooks/useTimer';
-import { calculateWPM, calculateAccuracy, applyStrikePenalty } from '../../utils/calculations';
+import cartIcon from '../../assets/cart.svg';
 import styles from './TypingChallenge.module.css';
 
 interface TypingChallengeProps {
-  config: TestConfig;
   text: string;
-  words: string[];
+  targetScore: number;
   isCountingDown?: boolean;
-  onComplete?: (results: TestResult) => void;
+  onComplete?: (finalScore: number, elapsedSeconds: number) => void;
 }
 
 const TypingChallenge: React.FC<TypingChallengeProps> = ({
-  config,
   text,
-  words,
+  targetScore,
   isCountingDown = false,
   onComplete
 }) => {
-  const handleComplete = () => {
-    if (!onComplete) return;
-
-    // Calculate final statistics
-    const totalChars = typedChars.filter(char => char !== '').length;
-    const correctChars = typedChars.filter(
-      (char, index) => char !== '' && char === expectedText[index]
-    ).length;
-
-    const accuracy = calculateAccuracy(correctChars, totalChars);
-    const rawWPM = calculateWPM(correctChars, Math.max(1, elapsedTime));
-    const finalWPM = applyStrikePenalty(rawWPM, strikes);
-
-    const totalWords = text.split(' ').filter(w => w.length > 0).length;
-    const completedWords = text
-      .slice(0, currentCharIndex)
-      .split(' ')
-      .filter(w => w.length > 0).length;
-
-    const results: TestResult = {
-      wpm: finalWPM,
-      rawWpm: rawWPM,
-      accuracy,
-      strikes,
-      timeElapsed: elapsedTime,
-      totalWords: totalWords,
-      correctWords: completedWords - strikes,
-      incorrectWords: strikes,
-    };
-
-    onComplete(results);
+  const handleComplete = (finalScore: number, elapsedSeconds: number) => {
+    if (onComplete) {
+      onComplete(finalScore, elapsedSeconds);
+    }
   };
+
   const inputRef = useRef<HTMLInputElement>(null);
   const textPreviewRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLSpanElement>(null);
-  const [lastKeyPressed, setLastKeyPressed] = React.useState<string>('');
+  const [lastKeyPressed, setLastKeyPressed] = useState<string>('');
+
+  // Shop state
+  const [isShopOpen, setIsShopOpen] = useState(false);
+  const [upgrades, setUpgrades] = useState<Upgrade[]>([
+    {
+      id: 'vowel-boost',
+      name: 'Vowel Boost',
+      description: 'Vowels (a, e, i, o, u) now give 2 points instead of 1',
+      cost: 50,
+      isPurchased: false,
+    },
+  ]);
+
+  // Get list of active upgrade IDs
+  const activeUpgrades = upgrades.filter(u => u.isPurchased).map(u => u.id);
 
   const {
     currentCharIndex,
     typedChars,
-    strikes,
+    score,
     shouldShake,
     startTest,
     handleKeyPress,
+    adjustScore,
     expectedText,
-    isActive,
   } = useTypingTest({
     text,
+    targetScore,
+    activeUpgrades,
     onComplete: handleComplete,
   });
-
-  const { timeRemaining, elapsedTime, formatTime } = useTimer({
-    config,
-    isActive,
-    onTimeUp: handleComplete,
-  });
-
-  // Calculate live WPM
-  const correctChars = typedChars.filter(
-    (char, index) => char !== '' && char === expectedText[index]
-  ).length;
-  const currentWPM = calculateWPM(correctChars, Math.max(1, elapsedTime));
 
   // Start test when countdown completes
   useEffect(() => {
@@ -162,48 +138,54 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
     return typedChars[index]; // Show what user actually typed
   };
 
-  // Calculate progress for word mode
-  const totalWords = config.mode === 'words' ? config.wordCount || 0 : 0;
-  const completedWords = text
-    .slice(0, currentCharIndex)
-    .split(' ')
-    .filter(w => w.length > 0).length;
+  // Shop handlers
+  const handleShopToggle = () => {
+    setIsShopOpen(!isShopOpen);
+  };
+
+  const handlePurchase = (upgradeId: string) => {
+    const upgrade = upgrades.find(u => u.id === upgradeId);
+    if (!upgrade || upgrade.isPurchased) return;
+
+    // Check if player can afford it
+    if (score < upgrade.cost) return;
+
+    // Deduct cost from score
+    adjustScore(-upgrade.cost);
+
+    // Mark upgrade as purchased
+    setUpgrades(upgrades.map(u =>
+      u.id === upgradeId ? { ...u, isPurchased: true } : u
+    ));
+
+    console.log(`Purchased upgrade: ${upgradeId}. Cost: ${upgrade.cost} points.`);
+  };
 
   return (
     <div className={styles.container} onClick={() => inputRef.current?.focus()}>
-      {/* Timer/Progress Display - Top Left */}
+      {/* Score Display - Top Center (Prominent) */}
       {!isCountingDown && (
-        <div className={styles.timerDisplay}>
-          {config.mode === 'time' ? (
-            <>
-              <div className={styles.timerLabel}>TIME</div>
-              <div className={styles.timerValue}>{formatTime(timeRemaining)}</div>
-            </>
-          ) : (
-            <>
-              <div className={styles.timerLabel}>PROGRESS</div>
-              <div className={styles.timerValue}>
-                {completedWords}/{totalWords}
-              </div>
-            </>
-          )}
+        <div className={`${styles.scoreDisplay} ${shouldShake ? styles.shake : ''}`}>
+          <div className={styles.scoreLabel}>SCORE</div>
+          <div className={styles.scoreValue}>{score}</div>
         </div>
       )}
 
-      {/* WPM Display - Top Center */}
-      {!isCountingDown && elapsedTime > 0 && (
-        <div className={styles.wpmDisplay}>
-          <div className={styles.wpmLabel}>WPM</div>
-          <div className={styles.wpmValue}>{currentWPM}</div>
+      {/* Shop Icon - Top Right */}
+      {!isCountingDown && (
+        <div className={styles.shopIcon} onClick={handleShopToggle}>
+          <img src={cartIcon} alt="Shop" className={styles.shopIconImage} />
         </div>
       )}
 
-      {/* Strike Counter - Top Right */}
-      {!isCountingDown && (
-        <div className={`${styles.strikeCounter} ${shouldShake ? styles.shake : ''}`}>
-          STRIKES: {strikes}
-        </div>
-      )}
+      {/* Shop Modal */}
+      <Shop
+        isOpen={isShopOpen}
+        onClose={handleShopToggle}
+        upgrades={upgrades}
+        currentScore={score}
+        onPurchase={handlePurchase}
+      />
 
       {/* Hidden Input Field */}
       <input

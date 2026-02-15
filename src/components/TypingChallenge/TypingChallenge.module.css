@@ -17,71 +17,63 @@
   height: 0;
 }
 
-/* Timer Display - Top Left */
-.timerDisplay {
-  position: absolute;
-  top: var(--spacing-lg);
-  left: var(--spacing-lg);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid var(--green-primary);
-  background-color: var(--bg-darker);
-  z-index: 10;
-  text-align: center;
-}
-
-.timerLabel {
-  font-size: var(--font-xs);
-  color: var(--green-secondary);
-  margin-bottom: 4px;
-}
-
-.timerValue {
-  font-size: var(--font-lg);
-  color: var(--green-primary);
-  text-shadow: 0 0 10px var(--green-neon);
-}
-
-/* WPM Display - Top Center */
-.wpmDisplay {
+/* Score Display - Top Center (Prominent) */
+.scoreDisplay {
   position: absolute;
   top: var(--spacing-lg);
   left: 50%;
   transform: translateX(-50%);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid var(--green-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 3px solid var(--green-primary);
   background-color: var(--bg-darker);
   z-index: 10;
   text-align: center;
+  min-width: 200px;
 }
 
-.wpmLabel {
-  font-size: var(--font-xs);
+.scoreLabel {
+  font-size: var(--font-sm);
   color: var(--green-secondary);
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
-.wpmValue {
-  font-size: var(--font-lg);
+.scoreValue {
+  font-size: var(--font-xl);
   color: var(--green-primary);
-  text-shadow: 0 0 10px var(--green-neon);
+  text-shadow: 0 0 15px var(--green-neon);
+  font-weight: bold;
 }
 
-/* Strike Counter - Top Right */
-.strikeCounter {
+/* Shop Icon - Top Right */
+.shopIcon {
   position: absolute;
   top: var(--spacing-lg);
   right: var(--spacing-lg);
-  font-size: var(--font-md);
-  color: var(--error);
-  text-shadow: 0 0 10px var(--error);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid var(--error);
+  width: 56px;
+  height: 56px;
+  border: 3px solid var(--green-primary);
   background-color: var(--bg-darker);
   z-index: 10;
-  transition: all 0.1s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px var(--green-primary);
 }
 
-/* Shake animation for strikes */
+.shopIcon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px var(--green-neon);
+}
+
+.shopIconImage {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 5px var(--green-neon));
+}
+
+/* Shake animation for mistakes */
 .shake {
   animation: shake 0.3s ease-in-out;
   background-color: var(--error) !important;
@@ -102,6 +94,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xl);
+  padding-top: 120px; /* Make room for score display */
 }
 
 .textPreview {

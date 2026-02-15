@@ -16,7 +16,7 @@
 .title {
   font-size: var(--font-xxl);
   color: var(--green-primary);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
   letter-spacing: 4px;
 }
 
@@ -46,75 +46,35 @@
 .subtitle {
   font-size: var(--font-md);
   color: var(--green-secondary);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: calc(var(--spacing-xxl) * 1.5);
 }
 
-/* Mode Cards Container */
-.modesContainer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
-}
-
-/* Mode Card */
-.modeCard {
-  background-color: var(--bg-darker);
-  border: var(--border-width) solid var(--green-primary);
-  padding: var(--spacing-lg);
-  box-shadow: 0 0 10px var(--green-neon);
-  transition: all 0.3s ease;
-}
-
-.modeCard:hover {
-  box-shadow: 0 0 20px var(--green-neon);
-  transform: translateY(-4px);
-}
-
-.modeTitle {
-  font-size: var(--font-lg);
-  color: var(--green-primary);
-  margin-bottom: var(--spacing-sm);
-  letter-spacing: 2px;
-}
-
-.modeDescription {
-  font-size: var(--font-sm);
-  color: var(--green-secondary);
-  margin-bottom: var(--spacing-lg);
-  line-height: 1.6;
-}
-
-/* Options Container */
-.optionsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-/* Option Buttons */
-.optionButton {
+/* Start Button */
+.startButton {
   font-family: 'Press Start 2P', monospace;
-  font-size: var(--font-sm);
+  font-size: var(--font-xl);
   color: var(--green-primary);
   background-color: var(--bg-dark);
-  border: 2px solid var(--green-primary);
-  padding: var(--spacing-md) var(--spacing-lg);
+  border: 4px solid var(--green-primary);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  margin: var(--spacing-xl);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
   text-transform: uppercase;
+  letter-spacing: 3px;
+  box-shadow: 0 0 20px var(--green-neon);
 }
 
-.optionButton:hover {
+.startButton:hover {
   background-color: var(--green-primary);
   color: var(--bg-dark);
-  box-shadow: 0 0 15px var(--green-neon);
-  transform: scale(1.05);
+  box-shadow: 0 0 25px var(--green-neon);
+  transform: scale(1.1);
 }
 
-.optionButton:active {
-  transform: scale(0.98);
+.startButton:active {
+  transform: scale(1.05);
 }
 
 /* Responsive Design */
@@ -123,12 +83,8 @@
     font-size: var(--font-xl);
   }
 
-  .modesContainer {
-    grid-template-columns: 1fr;
-  }
-
-  .optionButton {
-    font-size: var(--font-xs);
-    padding: var(--spacing-sm) var(--spacing-md);
+  .startButton {
+    font-size: var(--font-md);
+    padding: var(--spacing-md) var(--spacing-lg);
   }
 }

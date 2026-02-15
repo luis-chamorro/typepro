@@ -1,0 +1,6 @@
+We are pivoting the project from a typing challenge to a typing game.
+The main functionality will stay the same. However, instead of being a series of challenges to see how many wpm you can get, it will be an incremental game similar to cookie clicker
+At the start, there is just one button you can press, start game.
+When you start the game, you have your sentences to type, and you have a score. Every time you type a letter, your score goes up by 1. Every time you make a mistake, your score goes down by 1.
+At the top right, you will see a shop icon. When you click this icon, you are greeted with a menu of upgrades you can buy. The exact upgrades will be outlined in another txt file, but for now, let's just have one upgrade, which upgrades your vowels to instead grant 2 points instead of 1. You can buy an upgrade with points. Each upgrade cost x amount of points, and drains those points from your score. When we are implementing the upgrade mechanics, remember to ask me for the txt file.
+The game ends when you reach a certain amount of points. For testing, let's just make that 400. When you reach the limit, you are greeted by a "Congratulations, game completed" screen. We can work on that last.

@@ -3,7 +3,8 @@
     "allow": [
       "WebFetch(domain:www.npmjs.com)",
       "Bash(source:*)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "Bash(npm run build:*)"
     ]
   }
 }
