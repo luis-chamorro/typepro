@@ -213,15 +213,26 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
       <div className={styles.textSection}>
         <div className={styles.textPreview} ref={textPreviewRef}>
           {text.length > 0 ? (
-            text.split('').map((char, index) => (
-              <span
-                key={index}
-                className={getCharClassName(index)}
-                ref={index === currentCharIndex ? cursorRef : null}
-              >
-                {getDisplayChar(index)}
-              </span>
-            ))
+            (() => {
+              // Render only a window of characters for performance
+              // Keep 300 characters behind and 500 ahead
+              const windowStart = Math.max(0, currentCharIndex - 300);
+              const windowEnd = Math.min(text.length, currentCharIndex + 500);
+              const chars = text.split('').slice(windowStart, windowEnd);
+
+              return chars.map((char, offset) => {
+                const index = windowStart + offset;
+                return (
+                  <span
+                    key={index}
+                    className={getCharClassName(index)}
+                    ref={index === currentCharIndex ? cursorRef : null}
+                  >
+                    {getDisplayChar(index)}
+                  </span>
+                );
+              });
+            })()
           ) : (
             <span>Loading text...</span>
           )}
