@@ -1,13 +1,20 @@
-import { paragraph, addTemplates } from '@ndaidong/txtgen';
-import { moreSentenceTemplates } from './templates';
+import { SENTENCES } from './sentences';
 
-addTemplates(moreSentenceTemplates);
+const getRandomSentence = (): string => {
+  const randomInt = Math.floor(Math.random() * SENTENCES.length);
+  return SENTENCES[randomInt];
+}
 
 /**
  * Generate random text for typing game
- * Generates enough text for continuous gameplay
+ * Generates a very large buffer for continuous gameplay
  */
 export const generateText = (): string => {
-  // Generate a large paragraph to ensure continuous typing
-  return paragraph(15); // 15 sentences for continuous gameplay
+  // Generate a massive paragraph to ensure we never run out
+  // 300 sentences = ~15,000 characters = plenty for testing
+  const paragraph = [];
+  for (let i = 0; i < 300; i++) {
+    paragraph.push(getRandomSentence());
+  }
+  return paragraph.join(" ");
 };
