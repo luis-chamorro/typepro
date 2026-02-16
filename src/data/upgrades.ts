@@ -1,0 +1,167 @@
+import { Upgrade } from '../types';
+
+/**
+ * UPGRADE TREE SYSTEM
+ *
+ * Scoring Formula: Base × Key Multiplier × Combo Multiplier
+ *
+ * - Base: Starting value for each keystroke (starts at 1)
+ * - Key Multiplier: Vowels and consonants can have different multipliers
+ * - Combo Multiplier: Unlocked by maintaining WPM thresholds
+ *
+ * Costs are calculated for ~1 minute unlock intervals at 100 WPM (~500 chars/min baseline)
+ */
+
+export const UPGRADES: Upgrade[] = [
+  {
+    id: 1,
+    name: 'Vowel Power',
+    description: 'All vowels give 2× score',
+    cost: 100,
+    effect: {
+      type: 'vowel_multiplier',
+      value: 2
+    },
+    requisiteIds: []
+  },
+  {
+    id: 2,
+    name: 'Consonant Boost',
+    description: 'All consonants give 2× score',
+    cost: 500,
+    effect: {
+      type: 'consonant_multiplier',
+      value: 2
+    },
+    requisiteIds: [1]
+  },
+  {
+    id: 3,
+    name: 'Keyboard Upgrade I',
+    description: 'All keys are worth more (base 1 → 3)',
+    cost: 2000,
+    effect: {
+      type: 'base_score',
+      value: 3
+    },
+    requisiteIds: [1]
+  },
+  {
+    id: 4,
+    name: 'Vowel Mastery',
+    description: 'All vowels give 3× score',
+    cost: 6000,
+    effect: {
+      type: 'vowel_multiplier',
+      value: 3
+    },
+    requisiteIds: [1]
+  },
+  {
+    id: 5,
+    name: 'Consonant Mastery',
+    description: 'All consonants give 3× score',
+    cost: 15000,
+    effect: {
+      type: 'consonant_multiplier',
+      value: 3
+    },
+    requisiteIds: [2]
+  },
+  {
+    id: 6,
+    name: 'Combo System',
+    description: 'Unlocks 2× combo at 60 WPM',
+    cost: 30000,
+    effect: {
+      type: 'combo_unlock',
+      value: 60 // WPM threshold with multiplier encoded (60 WPM = 2x)
+    },
+    requisiteIds: [3, 4, 5]
+  },
+  {
+    id: 10,
+    name: 'Keyboard Upgrade II',
+    description: 'All keys are worth much more (base 3 → 10)',
+    cost: 80000,
+    effect: {
+      type: 'base_score',
+      value: 10
+    },
+    requisiteIds: [3]
+  },
+  {
+    id: 7,
+    name: 'Combo Efficiency',
+    description: '2× combo threshold lowered to 40 WPM',
+    cost: 200000,
+    effect: {
+      type: 'combo_threshold',
+      value: 40 // Lower threshold for 2x combo
+    },
+    requisiteIds: [6]
+  },
+  {
+    id: 8,
+    name: 'Speed Demon',
+    description: 'Unlocks 3× combo at 80 WPM',
+    cost: 500000,
+    effect: {
+      type: 'combo_unlock',
+      value: 80 // WPM threshold (80 WPM = 3x)
+    },
+    requisiteIds: [6]
+  },
+  {
+    id: 9,
+    name: 'Unbreakable Focus',
+    description: 'Mistakes no longer disable combos',
+    cost: 1500000,
+    effect: {
+      type: 'combo_no_break',
+      value: 1
+    },
+    requisiteIds: [3, 4, 5]
+  }
+];
+
+/**
+ * Helper function to get upgrade by ID
+ */
+export function getUpgradeById(id: number): Upgrade | undefined {
+  return UPGRADES.find(upgrade => upgrade.id === id);
+}
+
+/**
+ * Check if all prerequisites for an upgrade are met
+ */
+export function canPurchaseUpgrade(
+  upgradeId: number,
+  purchasedUpgradeIds: number[]
+): boolean {
+  const upgrade = getUpgradeById(upgradeId);
+  if (!upgrade) return false;
+
+  return upgrade.requisiteIds.every(reqId => purchasedUpgradeIds.includes(reqId));
+}
+
+/**
+ * Get all upgrades that are currently available to purchase
+ */
+export function getAvailableUpgrades(
+  purchasedUpgradeIds: number[]
+): Upgrade[] {
+  return UPGRADES.filter(upgrade =>
+    !purchasedUpgradeIds.includes(upgrade.id) &&
+    canPurchaseUpgrade(upgrade.id, purchasedUpgradeIds)
+  );
+}
+
+/**
+ * Get names of prerequisite upgrades
+ */
+export function getPrerequisiteNames(upgrade: Upgrade): string[] {
+  return upgrade.requisiteIds
+    .map(id => getUpgradeById(id)?.name)
+    .filter((name): name is string => name !== undefined);
+}

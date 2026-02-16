@@ -6,7 +6,7 @@ import TypingChallenge from './components/TypingChallenge/TypingChallenge';
 import { GameState, GameCompletion } from './types';
 import { generateText } from './utils/textGenerator';
 
-const TARGET_SCORE = 400; // Win condition for testing
+const TARGET_SCORE = 10_000_000_000_000; // 10 trillion - ridiculously high for testing
 
 function App() {
   const [gameState, setGameState] = useState<GameState>('welcome');
