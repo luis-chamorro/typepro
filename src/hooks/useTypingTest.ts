@@ -128,7 +128,6 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
 
         // Break combo unless noBreak upgrade is active
         if (!comboState.noBreak && comboState.isActive) {
-          console.log(`[COMBO] Broken by backspace!`);
           setComboState(prev => ({ ...prev, isActive: false, multiplier: 1 }));
         }
       }
@@ -170,10 +169,6 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
         );
 
         if (activeCombo) {
-          const wasActive = comboState.isActive && comboState.multiplier === activeCombo.multiplier;
-          if (!wasActive) {
-            console.log(`[COMBO] Activated! ${activeCombo.multiplier}× at ${wpm} WPM (threshold: ${activeCombo.wpm})`);
-          }
           setComboState(prev => ({
             ...prev,
             isActive: true,
@@ -182,9 +177,6 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
           }));
         } else {
           // WPM too low, deactivate combo
-          if (comboState.isActive) {
-            console.log(`[COMBO] Deactivated - WPM too low (${wpm} WPM)`);
-          }
           setComboState(prev => ({
             ...prev,
             isActive: false,
@@ -195,24 +187,14 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
 
       // Calculate score using new formula: Base × Key Multiplier × Combo Multiplier
       let keyMultiplier = 1;
-      let charType = 'other';
       if (isVowel(expectedChar)) {
         keyMultiplier = multipliers.vowel;
-        charType = 'vowel';
       } else if (isConsonant(expectedChar)) {
         keyMultiplier = multipliers.consonant;
-        charType = 'consonant';
       }
 
       const activeComboMultiplier = comboState.isActive ? comboState.multiplier : 1;
       const points = multipliers.base * keyMultiplier * activeComboMultiplier;
-
-      // Log scoring breakdown for Phase 2 deliverable
-      console.log(
-        `[SCORING] Char: '${expectedChar}' (${charType}) | ` +
-        `Base: ${multipliers.base}× | Key: ${keyMultiplier}× | Combo: ${activeComboMultiplier}× | ` +
-        `Points: ${points} | WPM: ${wpm} | Combo Active: ${comboState.isActive}`
-      );
 
       // Increment score
       setScore(prev => {
@@ -237,10 +219,7 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
 
       // Break combo unless noBreak upgrade is active
       if (!comboState.noBreak && comboState.isActive) {
-        console.log(`[COMBO] Broken by mistake! (typed '${key}' expected '${expectedChar}')`);
         setComboState(prev => ({ ...prev, isActive: false, multiplier: 1 }));
-      } else if (comboState.noBreak) {
-        console.log(`[COMBO] Mistake ignored - Unbreakable Focus active`);
       }
     }
 
