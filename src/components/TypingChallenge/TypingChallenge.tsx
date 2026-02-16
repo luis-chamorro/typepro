@@ -134,6 +134,12 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
   // Shop handlers
   const handleShopToggle = () => {
     setIsShopOpen(!isShopOpen);
+    // Restore focus to input when closing shop
+    if (isShopOpen) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
   };
 
   const handlePurchase = (upgradeId: number) => {
