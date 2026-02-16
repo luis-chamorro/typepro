@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import PixelTypewriter from '../PixelTypewriter/PixelTypewriter';
-import Shop, { Upgrade } from '../Shop/Shop';
+import Shop from '../Shop/Shop';
 import { useTypingTest } from '../../hooks/useTypingTest';
+import { UPGRADES } from '../../data/upgrades';
 import cartIcon from '../../assets/cart.svg';
 import styles from './TypingChallenge.module.css';
 
@@ -31,32 +32,24 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
 
   // Shop state
   const [isShopOpen, setIsShopOpen] = useState(false);
-  const [upgrades, setUpgrades] = useState<Upgrade[]>([
-    {
-      id: 'vowel-boost',
-      name: 'Vowel Boost',
-      description: 'Vowels (a, e, i, o, u) now give 2 points instead of 1',
-      cost: 50,
-      isPurchased: false,
-    },
-  ]);
-
-  // Get list of active upgrade IDs
-  const activeUpgrades = upgrades.filter(u => u.isPurchased).map(u => u.id);
+  const [purchasedUpgradeIds, setPurchasedUpgradeIds] = useState<number[]>([]);
 
   const {
     currentCharIndex,
     typedChars,
     score,
-    shouldShake,
+    lastMistake,
     startTest,
     handleKeyPress,
     adjustScore,
     expectedText,
+    multipliers,
+    comboState,
+    currentWPM,
   } = useTypingTest({
     text,
     targetScore,
-    activeUpgrades,
+    purchasedUpgradeIds,
     onComplete: handleComplete,
   });
 
@@ -143,9 +136,9 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
     setIsShopOpen(!isShopOpen);
   };
 
-  const handlePurchase = (upgradeId: string) => {
-    const upgrade = upgrades.find(u => u.id === upgradeId);
-    if (!upgrade || upgrade.isPurchased) return;
+  const handlePurchase = (upgradeId: number) => {
+    const upgrade = UPGRADES.find(u => u.id === upgradeId);
+    if (!upgrade || purchasedUpgradeIds.includes(upgradeId)) return;
 
     // Check if player can afford it
     if (score < upgrade.cost) return;
@@ -154,18 +147,16 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
     adjustScore(-upgrade.cost);
 
     // Mark upgrade as purchased
-    setUpgrades(upgrades.map(u =>
-      u.id === upgradeId ? { ...u, isPurchased: true } : u
-    ));
+    setPurchasedUpgradeIds([...purchasedUpgradeIds, upgradeId]);
 
-    console.log(`Purchased upgrade: ${upgradeId}. Cost: ${upgrade.cost} points.`);
+    console.log(`Purchased upgrade: ${upgrade.name} (ID: ${upgradeId}). Cost: ${upgrade.cost} points.`);
   };
 
   return (
     <div className={styles.container} onClick={() => inputRef.current?.focus()}>
       {/* Score Display - Top Center (Prominent) */}
       {!isCountingDown && (
-        <div className={`${styles.scoreDisplay} ${shouldShake ? styles.shake : ''}`}>
+        <div className={`${styles.scoreDisplay} ${lastMistake ? styles.shake : ''}`}>
           <div className={styles.scoreLabel}>SCORE</div>
           <div className={styles.scoreValue}>{score}</div>
         </div>
@@ -182,8 +173,8 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
       <Shop
         isOpen={isShopOpen}
         onClose={handleShopToggle}
-        upgrades={upgrades}
         currentScore={score}
+        purchasedUpgradeIds={purchasedUpgradeIds}
         onPurchase={handlePurchase}
       />
 

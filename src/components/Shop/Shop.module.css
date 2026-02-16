@@ -149,6 +149,18 @@
   opacity: 0.6;
 }
 
+/* Locked upgrade styling */
+.upgradeCard.locked {
+  border-color: var(--green-dim);
+  opacity: 0.4;
+}
+
+.upgradeCard.locked:hover {
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
 .upgradeContent {
   flex: 1;
 }
@@ -171,6 +183,13 @@
   font-size: var(--font-sm);
   color: var(--green-neon);
   font-weight: bold;
+}
+
+.requirements {
+  font-size: var(--font-xs);
+  color: var(--error);
+  margin-top: var(--spacing-sm);
+  font-style: italic;
 }
 
 /* Buy button */
@@ -226,6 +245,15 @@
   100% {
     transform: scale(1);
   }
+}
+
+/* Locked icon for unavailable items */
+.lockedIcon {
+  font-size: 48px;
+  color: var(--green-dim);
+  opacity: 0.5;
+  min-width: 100px;
+  text-align: center;
 }
 
 /* Responsive design */

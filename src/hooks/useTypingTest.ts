@@ -1,22 +1,93 @@
 import { useState, useCallback, useEffect } from 'react';
-import { isVowel } from '../utils/calculations';
+import { isVowel, isConsonant, calculateWPM } from '../utils/calculations';
+import { Multipliers, ComboState } from '../types';
 
 interface UseTypingTestProps {
   text: string;
   targetScore: number;
-  activeUpgrades: string[]; // Array of active upgrade IDs
+  purchasedUpgradeIds: number[]; // Array of purchased upgrade IDs
   onComplete: (finalScore: number, elapsedSeconds: number) => void;
 }
 
-export const useTypingTest = ({ text, targetScore, activeUpgrades, onComplete }: UseTypingTestProps) => {
+export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComplete }: UseTypingTestProps) => {
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const [typedChars, setTypedChars] = useState<string[]>(new Array(text.length).fill(''));
   const [score, setScore] = useState(0);
   const [totalMistakes, setTotalMistakes] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [shouldShake, setShouldShake] = useState(false);
+  const [lastMistake, setLastMistake] = useState(false); // For UI feedback (red flash)
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+
+  // New: Multiplier system
+  const [multipliers, setMultipliers] = useState<Multipliers>({
+    base: 1,
+    vowel: 1,
+    consonant: 1,
+    combo: 1,
+  });
+
+  // New: WPM tracking (rolling 20 character buffer)
+  const [charTimestamps, setCharTimestamps] = useState<number[]>([]);
+  const [currentWPM, setCurrentWPM] = useState(0);
+
+  // New: Combo system
+  const [comboState, setComboState] = useState<ComboState>({
+    isActive: false,
+    multiplier: 1,
+    threshold: 0,
+    noBreak: false,
+    availableThresholds: [],
+  });
+
+  // Update multipliers and combo state based on purchased upgrades
+  useEffect(() => {
+    const newMultipliers: Multipliers = { base: 1, vowel: 1, consonant: 1, combo: 1 };
+    const comboThresholds: { wpm: number; multiplier: number }[] = [];
+    let noBreak = false;
+
+    purchasedUpgradeIds.forEach(id => {
+      switch (id) {
+        case 1: // Vowel Power (2x)
+          newMultipliers.vowel = 2;
+          break;
+        case 2: // Consonant Boost (2x)
+          newMultipliers.consonant = 2;
+          break;
+        case 3: // Keyboard Upgrade I (base 1 → 3)
+          newMultipliers.base = 3;
+          break;
+        case 4: // Vowel Mastery (3x)
+          newMultipliers.vowel = 3;
+          break;
+        case 5: // Consonant Mastery (3x)
+          newMultipliers.consonant = 3;
+          break;
+        case 6: // Combo System (2x at 60 WPM)
+          comboThresholds.push({ wpm: 60, multiplier: 2 });
+          break;
+        case 10: // Keyboard Upgrade II (base 3 → 10)
+          newMultipliers.base = 10;
+          break;
+        case 7: // Combo Efficiency (2x at 40 WPM)
+          comboThresholds.push({ wpm: 40, multiplier: 2 });
+          break;
+        case 8: // Speed Demon (3x at 80 WPM)
+          comboThresholds.push({ wpm: 80, multiplier: 3 });
+          break;
+        case 9: // Unbreakable Focus (no combo break)
+          noBreak = true;
+          break;
+      }
+    });
+
+    setMultipliers(newMultipliers);
+    setComboState(prev => ({
+      ...prev,
+      availableThresholds: comboThresholds.sort((a, b) => b.multiplier - a.multiplier), // Highest multiplier first
+      noBreak,
+    }));
+  }, [purchasedUpgradeIds]);
 
   const startTest = useCallback(() => {
     setIsActive(true);
@@ -54,6 +125,12 @@ export const useTypingTest = ({ text, targetScore, activeUpgrades, onComplete }:
 
         // Move back one position
         setCurrentCharIndex(prevIndex);
+
+        // Break combo unless noBreak upgrade is active
+        if (!comboState.noBreak && comboState.isActive) {
+          console.log(`[COMBO] Broken by backspace!`);
+          setComboState(prev => ({ ...prev, isActive: false, multiplier: 1 }));
+        }
       }
       return;
     }
@@ -70,14 +147,72 @@ export const useTypingTest = ({ text, targetScore, activeUpgrades, onComplete }:
     newTypedChars[currentCharIndex] = key;
     setTypedChars(newTypedChars);
 
-    if (key === expectedChar) {
-      // Correct character - calculate points
-      let points = 1;
+    const isCorrect = key === expectedChar;
 
-      // Check for vowel boost upgrade
-      if (activeUpgrades.includes('vowel-boost') && isVowel(expectedChar)) {
-        points = 2;
+    if (isCorrect) {
+      // Update WPM tracking (rolling 20 character buffer)
+      const now = Date.now();
+      const updatedTimestamps = [...charTimestamps, now];
+      if (updatedTimestamps.length > 20) {
+        updatedTimestamps.shift(); // Keep only last 20
       }
+      setCharTimestamps(updatedTimestamps);
+
+      // Calculate current WPM
+      const wpm = calculateWPM(updatedTimestamps);
+      setCurrentWPM(wpm);
+
+      // Check combo activation based on WPM
+      if (comboState.availableThresholds.length > 0) {
+        // Find the highest multiplier combo that we qualify for
+        const activeCombo = comboState.availableThresholds.find(
+          threshold => wpm >= threshold.wpm
+        );
+
+        if (activeCombo) {
+          const wasActive = comboState.isActive && comboState.multiplier === activeCombo.multiplier;
+          if (!wasActive) {
+            console.log(`[COMBO] Activated! ${activeCombo.multiplier}× at ${wpm} WPM (threshold: ${activeCombo.wpm})`);
+          }
+          setComboState(prev => ({
+            ...prev,
+            isActive: true,
+            multiplier: activeCombo.multiplier,
+            threshold: activeCombo.wpm,
+          }));
+        } else {
+          // WPM too low, deactivate combo
+          if (comboState.isActive) {
+            console.log(`[COMBO] Deactivated - WPM too low (${wpm} WPM)`);
+          }
+          setComboState(prev => ({
+            ...prev,
+            isActive: false,
+            multiplier: 1,
+          }));
+        }
+      }
+
+      // Calculate score using new formula: Base × Key Multiplier × Combo Multiplier
+      let keyMultiplier = 1;
+      let charType = 'other';
+      if (isVowel(expectedChar)) {
+        keyMultiplier = multipliers.vowel;
+        charType = 'vowel';
+      } else if (isConsonant(expectedChar)) {
+        keyMultiplier = multipliers.consonant;
+        charType = 'consonant';
+      }
+
+      const activeComboMultiplier = comboState.isActive ? comboState.multiplier : 1;
+      const points = multipliers.base * keyMultiplier * activeComboMultiplier;
+
+      // Log scoring breakdown for Phase 2 deliverable
+      console.log(
+        `[SCORING] Char: '${expectedChar}' (${charType}) | ` +
+        `Base: ${multipliers.base}× | Key: ${keyMultiplier}× | Combo: ${activeComboMultiplier}× | ` +
+        `Points: ${points} | WPM: ${wpm} | Combo Active: ${comboState.isActive}`
+      );
 
       // Increment score
       setScore(prev => {
@@ -93,19 +228,37 @@ export const useTypingTest = ({ text, targetScore, activeUpgrades, onComplete }:
         return newScore;
       });
     } else {
-      // Incorrect character - decrement score (permanent penalty)
-      setScore(prev => Math.max(0, prev - 1));
+      // Incorrect character - NO score penalty, but break combo and track mistake
       setTotalMistakes(prev => prev + 1);
 
-      // Trigger shake animation
-      setShouldShake(true);
-      setTimeout(() => setShouldShake(false), 300);
+      // Trigger red flash animation
+      setLastMistake(true);
+      setTimeout(() => setLastMistake(false), 300);
+
+      // Break combo unless noBreak upgrade is active
+      if (!comboState.noBreak && comboState.isActive) {
+        console.log(`[COMBO] Broken by mistake! (typed '${key}' expected '${expectedChar}')`);
+        setComboState(prev => ({ ...prev, isActive: false, multiplier: 1 }));
+      } else if (comboState.noBreak) {
+        console.log(`[COMBO] Mistake ignored - Unbreakable Focus active`);
+      }
     }
 
     // Always move to next character
     const nextIndex = currentCharIndex + 1;
     setCurrentCharIndex(nextIndex);
-  }, [isActive, currentCharIndex, text, typedChars, targetScore, activeUpgrades, startTime, onComplete]);
+  }, [
+    isActive,
+    currentCharIndex,
+    text,
+    typedChars,
+    targetScore,
+    startTime,
+    onComplete,
+    multipliers,
+    comboState,
+    charTimestamps,
+  ]);
 
   return {
     currentCharIndex,
@@ -113,11 +266,15 @@ export const useTypingTest = ({ text, targetScore, activeUpgrades, onComplete }:
     score,
     totalMistakes,
     isActive,
-    shouldShake,
+    lastMistake, // For red flash on mistakes
     elapsedTime,
     startTest,
     handleKeyPress,
     adjustScore,
     expectedText: text,
+    // New: Multiplier and combo info for UI
+    multipliers,
+    comboState,
+    currentWPM,
   };
 };
