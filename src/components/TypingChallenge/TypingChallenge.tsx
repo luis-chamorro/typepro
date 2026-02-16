@@ -34,6 +34,9 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [purchasedUpgradeIds, setPurchasedUpgradeIds] = useState<number[]>([]);
 
+  // Cleanup threshold - only remove characters before this index
+  const [cleanupThreshold, setCleanupThreshold] = useState(0);
+
   const {
     currentCharIndex,
     typedChars,
@@ -133,7 +136,15 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
 
   // Shop handlers
   const handleShopToggle = () => {
+    // Cleanup old characters when opening shop
+    if (!isShopOpen) {
+      // Remove characters more than 300 behind current position
+      const newThreshold = Math.max(0, currentCharIndex - 300);
+      setCleanupThreshold(newThreshold);
+    }
+
     setIsShopOpen(!isShopOpen);
+
     // Restore focus to input when closing shop
     if (isShopOpen) {
       setTimeout(() => {
@@ -214,9 +225,9 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
         <div className={styles.textPreview} ref={textPreviewRef}>
           {text.length > 0 ? (
             (() => {
-              // Render only a window of characters for performance
-              // Keep 300 characters behind and 500 ahead
-              const windowStart = Math.max(0, currentCharIndex - 300);
+              // Render from cleanup threshold to current position + 500 ahead
+              // Cleanup only happens when opening shop
+              const windowStart = cleanupThreshold;
               const windowEnd = Math.min(text.length, currentCharIndex + 500);
               const chars = text.split('').slice(windowStart, windowEnd);
 
