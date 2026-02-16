@@ -198,10 +198,10 @@
   }
 }
 
-/* Combo Indicator - Bottom Left (only when active) */
+/* Combo Indicator - Top Left next to score (only when active) */
 .comboIndicator {
   position: absolute;
-  bottom: 120px;
+  top: var(--spacing-lg);
   left: var(--spacing-lg);
   padding: var(--spacing-md) var(--spacing-lg);
   border: 3px solid var(--green-neon);
