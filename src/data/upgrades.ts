@@ -17,7 +17,7 @@ export const UPGRADES: Upgrade[] = [
     id: 1,
     name: 'Vowel Power',
     description: 'All vowels give 2× score',
-    cost: 0, // TEMP: Free for testing
+    cost: 100,
     effect: {
       type: 'vowel_multiplier',
       value: 2
@@ -28,7 +28,7 @@ export const UPGRADES: Upgrade[] = [
     id: 2,
     name: 'Consonant Boost',
     description: 'All consonants give 2× score',
-    cost: 0, // TEMP: Free for testing
+    cost: 500,
     effect: {
       type: 'consonant_multiplier',
       value: 2
@@ -39,7 +39,7 @@ export const UPGRADES: Upgrade[] = [
     id: 3,
     name: 'Keyboard Upgrade I',
     description: 'All keys are worth more (base 1 → 3)',
-    cost: 0, // TEMP: Free for testing
+    cost: 2000,
     effect: {
       type: 'base_score',
       value: 3
@@ -50,7 +50,7 @@ export const UPGRADES: Upgrade[] = [
     id: 4,
     name: 'Vowel Mastery',
     description: 'All vowels give 3× score',
-    cost: 0, // TEMP: Free for testing
+    cost: 6000,
     effect: {
       type: 'vowel_multiplier',
       value: 3
@@ -61,7 +61,7 @@ export const UPGRADES: Upgrade[] = [
     id: 5,
     name: 'Consonant Mastery',
     description: 'All consonants give 3× score',
-    cost: 0, // TEMP: Free for testing
+    cost: 15000,
     effect: {
       type: 'consonant_multiplier',
       value: 3
@@ -72,7 +72,7 @@ export const UPGRADES: Upgrade[] = [
     id: 6,
     name: 'Combo System',
     description: 'Unlocks 2× combo at 60 WPM',
-    cost: 0, // TEMP: Free for testing
+    cost: 30000,
     effect: {
       type: 'combo_unlock',
       value: 60 // WPM threshold with multiplier encoded (60 WPM = 2x)
@@ -83,7 +83,7 @@ export const UPGRADES: Upgrade[] = [
     id: 10,
     name: 'Keyboard Upgrade II',
     description: 'All keys are worth much more (base 3 → 10)',
-    cost: 0, // TEMP: Free for testing
+    cost: 80000,
     effect: {
       type: 'base_score',
       value: 10
@@ -94,7 +94,7 @@ export const UPGRADES: Upgrade[] = [
     id: 7,
     name: 'Combo Efficiency',
     description: '2× combo threshold lowered to 40 WPM',
-    cost: 0, // TEMP: Free for testing
+    cost: 200000,
     effect: {
       type: 'combo_threshold',
       value: 40 // Lower threshold for 2x combo
@@ -105,7 +105,7 @@ export const UPGRADES: Upgrade[] = [
     id: 8,
     name: 'Speed Demon',
     description: 'Unlocks 3× combo at 80 WPM',
-    cost: 0, // TEMP: Free for testing
+    cost: 500000,
     effect: {
       type: 'combo_unlock',
       value: 80 // WPM threshold (80 WPM = 3x)
@@ -116,7 +116,7 @@ export const UPGRADES: Upgrade[] = [
     id: 9,
     name: 'Unbreakable Focus',
     description: 'Mistakes no longer disable combos',
-    cost: 0, // TEMP: Free for testing
+    cost: 1500000,
     effect: {
       type: 'combo_no_break',
       value: 1

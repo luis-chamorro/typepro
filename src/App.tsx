@@ -6,7 +6,7 @@ import TypingChallenge from './components/TypingChallenge/TypingChallenge';
 import { GameState, GameCompletion } from './types';
 import { generateText } from './utils/textGenerator';
 
-const TARGET_SCORE = 10_000_000_000_000; // 10 trillion - ridiculously high for testing
+const TARGET_SCORE = 50_000; // Win after ~1 min with all upgrades at 100 WPM
 
 function App() {
   const [gameState, setGameState] = useState<GameState>('welcome');
