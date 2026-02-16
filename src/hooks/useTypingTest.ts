@@ -40,6 +40,9 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
     availableThresholds: [],
   });
 
+  // Combo reset counter - requires 20 correct chars after mistake
+  const [comboResetCounter, setComboResetCounter] = useState(20);
+
   // Update multipliers and combo state based on purchased upgrades
   useEffect(() => {
     const newMultipliers: Multipliers = { base: 1, vowel: 1, consonant: 1, combo: 1 };
@@ -63,17 +66,17 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
         case 5: // Consonant Mastery (3x)
           newMultipliers.consonant = 3;
           break;
-        case 6: // Combo System (2x at 60 WPM)
-          comboThresholds.push({ wpm: 60, multiplier: 2 });
+        case 6: // Combo System (3x at 60 WPM)
+          comboThresholds.push({ wpm: 60, multiplier: 3 });
           break;
-        case 10: // Keyboard Upgrade II (base 3 → 10)
-          newMultipliers.base = 10;
+        case 10: // Keyboard Upgrade II (base 5 → 20)
+          newMultipliers.base = 20;
           break;
-        case 7: // Combo Efficiency (2x at 40 WPM)
-          comboThresholds.push({ wpm: 40, multiplier: 2 });
+        case 7: // Combo Efficiency (3x at 40 WPM)
+          comboThresholds.push({ wpm: 40, multiplier: 3 });
           break;
-        case 8: // Speed Demon (3x at 80 WPM)
-          comboThresholds.push({ wpm: 80, multiplier: 3 });
+        case 8: // Speed Demon (5x at 80 WPM)
+          comboThresholds.push({ wpm: 80, multiplier: 5 });
           break;
         case 9: // Unbreakable Focus (no combo break)
           noBreak = true;
@@ -126,9 +129,10 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
         // Move back one position
         setCurrentCharIndex(prevIndex);
 
-        // Break combo unless noBreak upgrade is active
-        if (!comboState.noBreak && comboState.isActive) {
+        // Break combo and reset counter unless noBreak upgrade is active
+        if (!comboState.noBreak) {
           setComboState(prev => ({ ...prev, isActive: false, multiplier: 1 }));
+          setComboResetCounter(0); // Require 20 correct chars before combo can reactivate
         }
       }
       return;
@@ -149,6 +153,9 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
     const isCorrect = key === expectedChar;
 
     if (isCorrect) {
+      // Increment combo reset counter (max 20)
+      setComboResetCounter(prev => Math.min(20, prev + 1));
+
       // Update WPM tracking (rolling 20 character buffer)
       const now = Date.now();
       const updatedTimestamps = [...charTimestamps, now];
@@ -161,8 +168,8 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
       const wpm = calculateWPM(updatedTimestamps);
       setCurrentWPM(wpm);
 
-      // Check combo activation based on WPM
-      if (comboState.availableThresholds.length > 0) {
+      // Check combo activation based on WPM (only if reset counter is full)
+      if (comboState.availableThresholds.length > 0 && comboResetCounter >= 20) {
         // Find the highest multiplier combo that we qualify for
         const activeCombo = comboState.availableThresholds.find(
           threshold => wpm >= threshold.wpm
@@ -183,6 +190,13 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
             multiplier: 1,
           }));
         }
+      } else if (comboResetCounter < 20) {
+        // Still in reset period, keep combo inactive
+        setComboState(prev => ({
+          ...prev,
+          isActive: false,
+          multiplier: 1,
+        }));
       }
 
       // Calculate score using new formula: Base × Key Multiplier × Combo Multiplier
@@ -217,9 +231,10 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
       setLastMistake(true);
       setTimeout(() => setLastMistake(false), 300);
 
-      // Break combo unless noBreak upgrade is active
-      if (!comboState.noBreak && comboState.isActive) {
+      // Break combo and reset counter unless noBreak upgrade is active
+      if (!comboState.noBreak) {
         setComboState(prev => ({ ...prev, isActive: false, multiplier: 1 }));
+        setComboResetCounter(0); // Require 20 correct chars before combo can reactivate
       }
     }
 
@@ -237,6 +252,7 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
     multipliers,
     comboState,
     charTimestamps,
+    comboResetCounter,
   ]);
 
   return {
