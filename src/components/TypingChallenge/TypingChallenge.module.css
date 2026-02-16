@@ -87,6 +87,117 @@
   75% { transform: translateX(10px) scale(1.1); }
 }
 
+/* Red flash overlay for mistakes */
+.redFlash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 51, 51, 0.3);
+  pointer-events: none;
+  z-index: 999;
+  animation: flashFade 0.3s ease-out;
+}
+
+@keyframes flashFade {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Multiplier HUD - Top Left */
+.multiplierHud {
+  position: absolute;
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--green-primary);
+  background-color: var(--bg-darker);
+  z-index: 10;
+  font-size: var(--font-xs);
+  color: var(--green-secondary);
+  line-height: 1.6;
+  min-width: 150px;
+}
+
+.multiplierTitle {
+  color: var(--green-primary);
+  margin-bottom: var(--spacing-xs);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.multiplierRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+}
+
+.multiplierLabel {
+  color: var(--green-secondary);
+}
+
+.multiplierValue {
+  color: var(--green-neon);
+  font-weight: bold;
+  text-shadow: 0 0 5px var(--green-neon);
+}
+
+/* WPM and Combo Display - Bottom Left */
+.statsDisplay {
+  position: absolute;
+  bottom: 120px;
+  left: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--green-primary);
+  background-color: var(--bg-darker);
+  z-index: 10;
+  font-size: var(--font-sm);
+  min-width: 150px;
+}
+
+.wpmDisplay {
+  color: var(--green-secondary);
+  margin-bottom: var(--spacing-xs);
+  text-align: center;
+}
+
+.wpmValue {
+  color: var(--green-neon);
+  font-size: var(--font-md);
+  font-weight: bold;
+  text-shadow: 0 0 5px var(--green-neon);
+}
+
+.comboDisplay {
+  text-align: center;
+  padding: var(--spacing-xs);
+  border-top: 1px solid var(--green-dim);
+  margin-top: var(--spacing-xs);
+}
+
+.comboActive {
+  color: var(--green-neon);
+  animation: comboPulse 1s ease-in-out infinite;
+  font-weight: bold;
+  text-shadow: 0 0 10px var(--green-neon);
+}
+
+.comboInactive {
+  color: var(--green-dim);
+}
+
+@keyframes comboPulse {
+  0%, 100% {
+    text-shadow: 0 0 10px var(--green-neon);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 20px var(--green-neon);
+    transform: scale(1.05);
+  }
+}
+
 /* Text preview section at top */
 .textSection {
   flex: 1;

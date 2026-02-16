@@ -1,0 +1,38 @@
+This doc outlines how the upgrades from the shop will work.
+
+The objective of the upgrades is to establish exponential multipliers, so that at the start getting 100 is not easy but at the end you're getting 100M every minute.
+
+THE SCORING SYSTEM:
+Every time you type a letter, your score goes up. The amount your score goes up is determined by four numbers. The formula is
+
+Base x Key Multiplier x Combo Multiplier x Additional Multiplier
+
+The base is the base amount of points each key provides. At the start of the game, this is equal to 1, and all the multipliers are also equal to 1, so you get a flat 1 point for every key typed.
+
+The key multiplier is the first upgrade you unlock. So one of the first upgrades is, all vowels give 2x points. That makes it so that the key multiplier for vowels is 2. 
+
+Then comes the combo multiplier. Eventually, you unlock a combo upgrade. A combo upgrade will make it so that while you're averaging more than x amount of wpm over the last 20 letters you've typed, your score is multiplied by a base amount. This is cancelled by typing in a word wrong, and you have to start the combo over.
+
+The last is the additional multiplier. This one I haven't fleshed out as much yet, but I want some upgrades to use this one. For example, I'm thinking one of the late game upgrades will be, after punctuation, the next 10 letters you type will give 2x points.
+
+
+THE UPGRADE TREE:
+
+Some upgrades will be gated behind other upgrades, because you can't upgrade your key multiplier to 5x without first having upgraded it to 2x, for example. To make this easier to understand, I will give each upgrade an id, and for each upgrade, I will list the upgrades that depend on it. You can only obtain an upgrade after you have obtained every upgrade that depends on it.
+
+THE LIST OF UPGRADES:
+
+Below is the list of upgrades I have come up with so far. For each upgrade, I will list the effect, the id, and the ids of the upgrades that must be unlocked before it. I'd like you to come up with a shop cost that makes sense for someone to unlock an upgrade every ~1 minute with an average typing speed of 100wpm.
+
+- { id: 1, description: "All vowels give 2x score", effect: "Key multiplier for vowels is 2", requisiteIds: {}}
+- { id: 2, description: "All consonants give 2x score", effect: "Key multiplier for consonants is 2", requisiteIds: {1}}
+- { id: 3, description: "Keyboard upgrade, all keys are worth more", effect: "base score for each key goes from 1 to 3", requisiteIds: {1}}
+- { id: 4, description: "All vowels give 3x score", effect: "Key multiplier for vowels is 3", requisiteIds: {1}}
+- { id: 5, description: "All consonants give 3x score", effect: "Key multiplier for consonants is 3", requisiteIds: {2}}
+- { id: 6, description: "Unlocks combos after typing fast without errors", effect: "unlocks a 2x combo effect after surpassing 60wpm, requisiteIds: {3,4,5}}
+- { id: 3, description: "Keyboard upgrade, all keys are worth more", effect: "base score for each key goes from 3 to 10", requisiteIds: {3}}
+- { id: 7, description: "Threshold for 2x combo is lower", effect: "unlocks a 2x combo effect after surpassing 40wpm, requisiteIds: {6}}
+- { id: 8, description: "Unlocks 3x combos after typing fast without errors", effect: "unlocks a 2x combo effect after surpassing 80wpm", requisiteIds: {6}}
+- { id: 9, description: "Getting keys wrong no longer disables combos", effect: "No longer cancels combo after getting a word wrong", requisiteIds: {3,4,5}}
+
+Let's start with this and see how we can improve after play testing 

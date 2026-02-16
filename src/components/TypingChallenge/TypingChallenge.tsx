@@ -154,11 +154,60 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
 
   return (
     <div className={styles.container} onClick={() => inputRef.current?.focus()}>
+      {/* Red Flash on Mistakes */}
+      {lastMistake && <div className={styles.redFlash} />}
+
       {/* Score Display - Top Center (Prominent) */}
       {!isCountingDown && (
         <div className={`${styles.scoreDisplay} ${lastMistake ? styles.shake : ''}`}>
           <div className={styles.scoreLabel}>SCORE</div>
-          <div className={styles.scoreValue}>{score}</div>
+          <div className={styles.scoreValue}>{score.toLocaleString()}</div>
+        </div>
+      )}
+
+      {/* Multiplier HUD - Top Left */}
+      {!isCountingDown && (
+        <div className={styles.multiplierHud}>
+          <div className={styles.multiplierTitle}>MULTIPLIERS</div>
+          <div className={styles.multiplierRow}>
+            <span className={styles.multiplierLabel}>Base:</span>
+            <span className={styles.multiplierValue}>{multipliers.base}×</span>
+          </div>
+          <div className={styles.multiplierRow}>
+            <span className={styles.multiplierLabel}>Vowels:</span>
+            <span className={styles.multiplierValue}>{multipliers.vowel}×</span>
+          </div>
+          <div className={styles.multiplierRow}>
+            <span className={styles.multiplierLabel}>Consonants:</span>
+            <span className={styles.multiplierValue}>{multipliers.consonant}×</span>
+          </div>
+          <div className={styles.multiplierRow}>
+            <span className={styles.multiplierLabel}>Combo:</span>
+            <span className={styles.multiplierValue}>{comboState.isActive ? comboState.multiplier : 1}×</span>
+          </div>
+        </div>
+      )}
+
+      {/* WPM and Combo Status - Bottom Left */}
+      {!isCountingDown && (
+        <div className={styles.statsDisplay}>
+          <div className={styles.wpmDisplay}>
+            <div className={styles.wpmValue}>{currentWPM}</div>
+            <div>WPM</div>
+          </div>
+          <div className={styles.comboDisplay}>
+            {comboState.isActive ? (
+              <div className={styles.comboActive}>
+                🔥 COMBO {comboState.multiplier}× 🔥
+              </div>
+            ) : comboState.availableThresholds.length > 0 ? (
+              <div className={styles.comboInactive}>
+                {comboState.availableThresholds[0].wpm} WPM for combo
+              </div>
+            ) : (
+              <div className={styles.comboInactive}>No combo unlocked</div>
+            )}
+          </div>
         </div>
       )}
 
