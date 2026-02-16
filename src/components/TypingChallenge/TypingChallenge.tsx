@@ -49,6 +49,7 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
     multipliers,
     comboState,
     currentWPM,
+    devMode,
   } = useTypingTest({
     text,
     targetScore,
@@ -188,6 +189,13 @@ const TypingChallenge: React.FC<TypingChallengeProps> = ({
           <div className={styles.comboActive}>
             🔥 COMBO {comboState.multiplier}× 🔥
           </div>
+        </div>
+      )}
+
+      {/* Dev Mode Indicator - Top Right Corner */}
+      {!isCountingDown && devMode && (
+        <div className={styles.devModeIndicator}>
+          DEV MODE
         </div>
       )}
 

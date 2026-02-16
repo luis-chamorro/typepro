@@ -43,6 +43,9 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
   // Combo reset counter - requires 20 correct chars after mistake
   const [comboResetCounter, setComboResetCounter] = useState(20);
 
+  // Dev mode - any key = correct, backspace = incorrect
+  const [devMode, setDevMode] = useState(false);
+
   // Update multipliers and combo state based on purchased upgrades
   useEffect(() => {
     const newMultipliers: Multipliers = { base: 1, vowel: 1, consonant: 1, combo: 1 };
@@ -116,8 +119,30 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
   const handleKeyPress = useCallback((key: string) => {
     if (!isActive) return;
 
+    // Toggle dev mode with "|"
+    if (key === '|') {
+      setDevMode(prev => !prev);
+      console.log(devMode ? '[DEV MODE] Disabled' : '[DEV MODE] Enabled - Any key = correct, Backspace = incorrect');
+      return;
+    }
+
     // Handle backspace
     if (key === 'Backspace') {
+      // In dev mode, backspace = mistake (don't actually delete)
+      if (devMode) {
+        setTotalMistakes(prev => prev + 1);
+        setLastMistake(true);
+        setTimeout(() => setLastMistake(false), 300);
+
+        // Break combo and reset counter unless noBreak upgrade is active
+        if (!comboState.noBreak) {
+          setComboState(prev => ({ ...prev, isActive: false, multiplier: 1 }));
+          setComboResetCounter(0);
+        }
+        return;
+      }
+
+      // Normal backspace behavior
       if (currentCharIndex > 0) {
         const prevIndex = currentCharIndex - 1;
 
@@ -147,10 +172,10 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
 
     const expectedChar = text[currentCharIndex];
     const newTypedChars = [...typedChars];
-    newTypedChars[currentCharIndex] = key;
+    newTypedChars[currentCharIndex] = devMode ? expectedChar : key; // In dev mode, always store correct char
     setTypedChars(newTypedChars);
 
-    const isCorrect = key === expectedChar;
+    const isCorrect = devMode || key === expectedChar; // In dev mode, always correct
 
     if (isCorrect) {
       // Increment combo reset counter (max 20)
@@ -253,6 +278,7 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
     comboState,
     charTimestamps,
     comboResetCounter,
+    devMode,
   ]);
 
   return {
@@ -271,5 +297,6 @@ export const useTypingTest = ({ text, targetScore, purchasedUpgradeIds, onComple
     multipliers,
     comboState,
     currentWPM,
+    devMode,
   };
 };

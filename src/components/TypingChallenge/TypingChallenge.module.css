@@ -44,6 +44,31 @@
   font-weight: bold;
 }
 
+/* Dev Mode Indicator - Top Right Corner */
+.devModeIndicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  background-color: var(--error);
+  color: var(--bg-dark);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 2px solid var(--bg-dark);
+  z-index: 100;
+  animation: devModePulse 1s ease-in-out infinite;
+}
+
+@keyframes devModePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
 /* Shop Icon - Top Right */
 .shopIcon {
   position: absolute;
